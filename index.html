@@ -1,40 +1,194 @@
 <!doctype html>
 <html>
-	<head>
-		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-		<title>reveal.js</title>
+    <title>reveal.js</title>
 
-		<link rel="stylesheet" href="dist/reset.css">
-		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css" id="theme">
+    <link rel="stylesheet" href="dist/reset.css">
+    <link rel="stylesheet" href="dist/reveal.css">
+    <link rel="stylesheet" href="dist/theme/black.css" id="theme">
 
-		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
-	</head>
-	<body>
-		<div class="reveal">
-			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
-			</div>
-		</div>
+    <!-- Theme used for syntax highlighted code -->
+    <link rel="stylesheet" href="plugin/highlight/monokai.css" id="highlight-theme">
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section>
+            <p class="fragment">Presentation stage </p>
+            <p class="fragment">Bestt</p>
+        </section>
+        <section>
+            <p class="fragment fade-up">Le projet</p>
+            <p class="fragment fade-up">
+                <img class="fit-picture"
+                     src="images/Capture d’écran 2021-02-22 125347.png"
+                     alt="candidatheque">
+            </p>
+        </section>
+        <section>
 
-		<script src="dist/reveal.js"></script>
-		<script src="plugin/notes/notes.js"></script>
-		<script src="plugin/markdown/markdown.js"></script>
-		<script src="plugin/highlight/highlight.js"></script>
-		<script>
-			// More info about initialization & config:
-			// - https://revealjs.com/initialization/
-			// - https://revealjs.com/config/
-			Reveal.initialize({
-				hash: true,
+            <h3>La planification</h3>
+            <p>Le chef de projet a mis en place un espace dédié qui utilise Trello pour les différents projets en cours,
+                dont le nôtre.</p>
 
-				// Learn about plugins: https://revealjs.com/plugins/
-				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
-			});
-		</script>
-	</body>
+        </section>
+
+        <section>
+            <img class="fit-picture"
+                 src="images/Capture d’écran 2021-02-22 125758.png"
+                 alt="candidatheque">
+        </section>
+        <section>
+            <h3>Git dans notre projet.</h3>
+            <p>Voici l’architecture du projet candidathèque sur Git.</p>
+            <img class="fit-picture"
+                 src="images/Capture d’écran 2021-02-22 125953.png"
+                 alt="git">
+        </section>
+        <section>
+            <h3>Les différentes branche</h3>
+            <img class="fit-picture"
+                 src="images/Capture d’écran 2021-02-22 130145.png"
+                 alt="git">
+        </section>
+        <section>
+            <h3>Symfony 5</h3>
+            <p>Symfony est un framework de type M.V.C ( Modèle,Vue,Contrôleur)</p>
+            <img class="fit-picture"
+                 src="images/Capture d’écran 2021-02-22 130848.png"
+                 alt="git">
+
+        </section>
+        <section>
+            <h3>Avantage</h3>
+            <li class="fragment">Une importante communauté autour du framework</li>
+            <li class="fragment">Un nombre important de bundle et/ou outils mise à disposition pour faciliter le
+                développement
+            </li>
+            <li class="fragment">Une documentation claire et nombreuse.</li>
+            <li class="fragment">Une debugbar incorporée au projet afin d’identifier les différents problèmes ou
+                contrôler le bon fonctionnement du site/application.
+            </li>
+        </section>
+        <section>
+            <h3>Doctrine ORM, l’essentiel</h3>
+            <p>Doctrine est un projet d’ORM écrit en PHP.
+                En tant qu’ORM, son rôle est de :</p>
+            <li class="fragment">transformer les objets PHP en écriture SQL</li>
+            <li class="fragment">récupérer les écritures SQL et les transformer en objet PHP</li>
+        </section>
+        <section>
+            <h3>Entité</h3>
+            <section>
+  <pre><code data-trim data-noescape>
+class Postule
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dateSelection;
+
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $rang;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Candidat::class, inversedBy="postules")
+     */
+    private $candidat;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Offre::class, inversedBy="postules")
+     */
+    private $offre;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Entreprise::class, inversedBy="postules")
+     */
+    private $agence;
+  </code></pre>
+            </section>
+        </section>
+        <section>
+            <h3>Dashboard</h3>
+            <img class="fit-picture"
+                 src="images/Capture d’écran 2021-02-22 132033.png"
+                 alt="git">
+        </section>
+        <section>
+            <img class="fit-picture"
+                 src="images/Capture d’écran 2021-02-22 163305.png"
+                 alt="git">
+        </section>
+        <section>
+	<pre><code data-line-numbers="2|3|4|17-24">
+ <div class="container-fluid">
+        <div class="row">
+            <div class=" col-6">
+                <a  style="color: black;text-decoration:none" href={{ path('offres_liste') }}>
+                <div class="card card-top w-100 mx-auto">
+                    <div class="card-body">
+                        <div>
+                            <i class="fab fa-buffer fa-3x"></i>
+                        </div>
+                        <p class="card-title text-right" style="font-size: 26px">{{ offres |length }}</p>
+                        <h5 class="card-title text-right">Total offres actives</h5>
+                    </div>
+                </div>
+                </a>
+            </div>
+            <div class="col-6">
+                <div class="card card-top w-100 mx-auto">
+                    <div class="card-body">
+                        <i class="fas fa-users fa-3x"></i>
+                        <p class="card-title text-right" style="font-size: 26px";>{{ cvs }}</p>
+                        <h5 class="card-title text-right">Total CVs disponibles sur canditatheque</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+ </div>
+                        </code></pre>
+        </section>
+        <section>
+            <h3>Alimenter notre bdd</h3>
+            <h4>Les datafixtures.</h4>
+        </section>
+        <section>Slide 13</section>
+        <section>Slide 13</section>
+        <section>Slide 13</section>
+        <section>Slide 13</section>
+        <section>Slide 13</section>
+
+
+    </div>
+</div>
+
+<script src="dist/reveal.js"></script>
+<script src="plugin/notes/notes.js"></script>
+<script src="plugin/markdown/markdown.js"></script>
+<script src="plugin/highlight/highlight.js"></script>
+<script>
+    // More info about initialization & config:
+    // - https://revealjs.com/initialization/
+    // - https://revealjs.com/config/
+    Reveal.initialize({
+        hash: true,
+
+        // Learn about plugins: https://revealjs.com/plugins/
+        plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+    });
+</script>
+</body>
 </html>
