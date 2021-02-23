@@ -205,26 +205,88 @@ html {
 }
             </code></pre>
         </section>
-        <section>
-            <section>
+        <section >
             <h3>Les données dans la page</h3>
 
             <li class="fragment">Le controleur</li>
-            <li class="fragment">Le constructeur</li>
-            <li class="fragment">Recuperation des offres</li>
-            </section>
-            <section>
-                <h3>Dump and die </h3>
-                <img class="fit-picture"
-                     src="images/dump.png"
-                     alt="dump">
-            </section>
-            <section>
-                <h3>Controleur => twig</h3>
-                <img class="fit-picture"
-                     src="images/vue.png"
-                     alt="vue">
-            </section>
+                <pre class="fragment" ><code data-line-numbers="1-5|6-29" >
+/**
+* @Route("/entreprise/dashboard", name="dashboard_entreprise")
+*
+*/
+public function dashboard(): Response {
+
+
+ $entreprise = $this->getUser()->getRecruteur()->getEntreprise()->getId();
+
+
+$offres=$this->offreRepo->findByCompany($entreprise);
+
+
+$cvs=$this->cvRepo->findAll();
+
+
+
+return $this->render('entreprise/dashboard_entreprise.html.twig',[
+
+
+'offres'=>$offres,
+ 'cvs'=>count($cvs),
+
+
+
+
+        ]);
+    }
+
+
+                    </code></pre>
+        </section>
+        <section>
+            <li >Le constructeur</li>
+            <pre class="fragment"><code data-line-numbers="2-4|6-12">
+protected $offreRepo;
+protected $postuleRepo;
+protected $cvRepo;
+
+public function __construct(OffreRepository $offreRepo, PostuleRepository $postuleRepo,CVRepository $cvRepo){
+
+        $this->offreRepo=$offreRepo;
+        $this->postuleRepo=$postuleRepo;
+        $this->cvRepo=$cvRepo;
+
+    }
+
+
+</code></pre>
+        </section>
+        <section>
+            <li> Recuperation des données</li>
+            <pre class="fragment"><code data-trim data-noescape>
+ $offres=$this->offreRepo->findByCompany($entreprise);
+            </code></pre>
+        </section>
+        <section>
+            <h3>Fonction findByCompany($entreprise)</h3>
+<p>A quoi correspond la fonction</p>
+<pre><code>
+     public function findByCompany($entreprise_id)
+    {
+        return $this->createQueryBuilder('o')
+            ->andWhere('o.entreprise = :entreprise_id')
+            ->setParameter('entreprise_id', $entreprise_id)
+            ->orderBy('o.datePublication', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+</code></pre>
+        </section>
+        <section>
+            <h3>Que retourne $offre</h3>
+            <img class="fit-picture fragment"
+                 src="images/dump.png"
+                 alt="erreur">
         </section>
         <section>
             <h3>La page Twig</h3>
@@ -234,12 +296,10 @@ html {
                  src="images/erreur.png"
                  alt="erreur">
         </section>
-
         <section>
             <h3>Alimenter notre bdd</h3>
             <h4>Les datafixtures.</h4>
         </section>
-
         <section>
         <h3>Partie de datafixture</h3>
             <img class="fit-picture fragment"
@@ -263,7 +323,7 @@ html {
         </section>
         <section>
             <h1>React Js</h1>
-            <img class="fit-picture fragment"
+            <img class="fit-picture"
                  src="images/react.jpg"
                  alt="data2">
         </section>
@@ -278,6 +338,7 @@ html {
         <section>
             <h3> Objectif</h3>
             <li class="fragment">Créer une application de sourcing</li>
+            <p>Recherche de candidat en fonction de critere, afficher le resultat ainsi que le cv</p>
             <h3 CLASS="fragment"> Difficulté</h3>
             <li class="fragment">Comprendre la philosophie</li>
             <li class="fragment">Principe de fonctionnement.</li>
@@ -297,16 +358,20 @@ html {
         </section>
         <section>
             <h3>La structure du code </h3>
-            <p> Explication via IDE</p>
+            <img class="fit-picture "
+                 src="images/reactstruct.png"
+                 alt="api">
         </section>
         <section>
             <h3> Importation de librairie</h3>
-            <p> Explication via IDE</p>
+            <img class="fit-picture "
+                 src="images/import.png"
+                 alt="api">
         </section>
         <section>
             <h3>Pause dans le projet</h3>
             <p class="fragment">Pourquoi</p>
-            <p>Qu'elle solution ?</p>
+            <p>Quelle solution ?</p>
         </section>
         <section>
             <h3>API Platform</h3>
@@ -321,25 +386,136 @@ html {
                  src="images/api ville.png"
                  alt="api">
         </section>
-
         <section>
-            <h3> Creation Api</h3>
-            <p>Explication via IDE</p>
+            <section>Explication des fonctions </section>
+            <section>
+                <section>Les contantes</section>
+                <pre><code>
+                    function Recherche(props) {
+    const [inputValue, setValue] = useState('');
+    const [selectedValue, setSelectedValue] = useState(null);
+    const [data, setdata] = useState(null);
+
+                </code></pre>
+            </section>
+
+            <section>Les contantes : la fonction fetch
+            <p >L'API Fetch fournit une interface JavaScript pour l'accès et la manipulation des parties de la pipeline HTTP, comme les requêtes et les réponses.</p>
+            <pre><code>
+                 const loadOptions = (inputValue) => {
+        return fetch(`http://candidatheque.canguidev.site//api/villes?nom=${inputValue}`).then(res => res.json());
+    };
+            </code></pre>
         </section>
         <section>
-            <h3> Explication des fonctions </h3>
-            <p>Explication via IDE</p>
+            <h3> Le parametrage de l'input</h3>
+            <pre><code>
+ <AsyncSelect
+
+         placeholder=""
+         getOptionLabel={e => e.nom}
+         getOptionValue={e => e.id}
+         loadOptions={loadOptions}
+         onInputChange={handleInputChange}
+         onChange={handleChange}
+         placeholder="Saisissez la ville.."
+         components={{DropdownIndicator: () => null, IndicatorSeparator: () => null}}
+                                />
+            </code></pre>
         </section>
         <section>
             <h3> Demonstration Imput Ville</h3>
             <a href="http://candidatheque.canguidev.site">Candidatheque</a>
+        </section>
+        </section>
+        <section>
+            <h3>Autre composants</h3>
+            <p>Les autres composants on la même syntaxe pour capter les imformation </p>
+        </section>
+        <section>
+            <section>
+            <h3> Creation Api pour obtenir les informations suite a une requete</h3>
+            <p>1er etape</p>
+                <pre><code>
+     /**
+     * @Route("/api/sourcing/recherche", name="api_sourcing_recherche")
+     */
+ public function api_sourcing_recherche(CVRepository $cv_repo, Request $request,VilleRepository $repoVille)
+    {
+        $keyword = $request->query->get("keyword");
+        $ville = $request->query->get("ville");
+        $metier = $request->query->get("metier");
+        $favoris = $request->query->get("favoris");
+        $rayon=$request->query->get('rayon');
+                </code></pre>
+            </section>
+            <section>
+                <p> 2eme etape</p>
+                <pre><code>
+ $query = $cv_repo->createQueryBuilder('c')
+            ->select('c.id', 'can.nom as nom', 'can.prenom as prenom', 'can.adresse as adresse','can.telephone as telephone','c.titre as titre','met.id as idmetier','met.libelle as metLibele','dep.id as idrecruteur','vil.id as idville','vil.nom as ville')
+            ->join('c.candidat', 'can')
+            ->join('c.metier','met')
+            ->leftjoin('can.ville','vil')
+            ->leftJoin('c.competences','comp')
+            ->leftJoin('c.deposePar','dep');
+                </code></pre>
+            </section>
+            <section>
+            <p> 3eme etape</p>
+            <pre><code>
+if ($keyword) {
+            $query
+                ->andWhere('(c.titre like :keyword or met.libelle like :keyword or comp.libelle like :keyword)')
+                ->setParameter('keyword', '%' . $keyword . '%');
+
+        }
+
+        if ($favoris){
+            $query
+                ->andWhere('dep.id like :recruteur ')
+                ->setParameter('recruteur',  $this->getUser()->getRecruteur()->getId() );
+
+        }
+
+        if ($metier){
+            $query
+                ->andWhere('met.id like :metier ')
+                ->setParameter('metier',  $metier );
+
+        }
+
+        if ($rayon){
+
+            $query
+                ->andWhere('vil.id IN (:result)')
+                ->setParameter(
+                    'result', $repoVille->searchAround($ville,$rayon)
+                );
+
+
+        }
+            </code></pre>
+            </section>
+            <section>
+                <p> On termine</p>
+                <pre><code>
+
+        $entities=$query->distinct()->getQuery()
+            ->setMaxResults(30)
+            ->getResult();
+
+        return new JsonResponse($entities);
+    }
+                </code></pre>
+                <p>On utilise JsonResponse afin de pouvoir envoyer des données provenant du language php vers javascript (format de donnée)</p>
+            </section>
         </section>
         <section>
             <h3>Comportement des actions</h3>
             <img class="fit-picture fragment"
                  src="images/Capture d’écran 2021-02-22 133626.png"
                  alt="api">
-            <p class="fragment">Explication via IDE</p>
         </section>
         <section>
             <h3>Conclusion</h3>
