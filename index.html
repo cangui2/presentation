@@ -17,7 +17,7 @@
 <div class="reveal">
     <div class="slides">
         <section>
-            <p class="fragment">Presentation stage </p>
+            <p class="fragment">Présentation stage </p>
             <p class="fragment">Bestt</p>
         </section>
         <section>
@@ -48,7 +48,7 @@
                  alt="git">
         </section>
         <section>
-            <h3>Les différentes branche</h3>
+            <h3>Les différentes branches</h3>
             <img class="fit-picture"
                  src="images/Capture d’écran 2021-02-22 130145.png"
                  alt="git">
@@ -260,7 +260,7 @@ public function __construct(OffreRepository $offreRepo, PostuleRepository $postu
 </code></pre>
         </section>
         <section>
-            <li> Recuperation des données</li>
+            <li> Récupération des données</li>
             <pre class="fragment"><code data-trim data-noescape>
  $offres=$this->offreRepo->findByCompany($entreprise);
             </code></pre>
@@ -801,8 +801,8 @@ class Entreprise
         <section>
             <h3> Objectif</h3>
             <li class="fragment">Créer une application de sourcing</li>
-            <p>Recherche de candidat en fonction de critere, afficher le resultat ainsi que le cv</p>
-            <h3 CLASS="fragment"> Difficulté</h3>
+            <p>Recherche de candidat en fonction de critère, afficher le resultat ainsi que le cv</p>
+            <h3 CLASS="fragment"> Difficultés</h3>
             <li class="fragment">Comprendre la philosophie</li>
             <li class="fragment">Principe de fonctionnement.</li>
 
@@ -855,7 +855,7 @@ import Form from "react-bootstrap/Form";
         <section>
             <section>Explication des fonctions </section>
             <section>
-                <section>Les contantes</section>
+                <section>Les constantes</section>
                 <pre><code>
                     function Recherche(props) {
     const [inputValue, setValue] = useState('');
@@ -865,7 +865,7 @@ import Form from "react-bootstrap/Form";
                 </code></pre>
             </section>
 
-            <section>Les contantes : la fonction fetch
+            <section>Les constantes : la fonction fetch
             <p >L'API Fetch fournit une interface JavaScript pour l'accès et la manipulation des parties de la pipeline HTTP, comme les requêtes et les réponses.</p>
             <pre><code>
                  const loadOptions = (inputValue) => {
@@ -890,18 +890,18 @@ import Form from "react-bootstrap/Form";
             </code></pre>
         </section>
         <section>
-            <h3> Demonstration Imput Ville</h3>
+            <h3> Démonstration Imput Ville</h3>
             <a href="http://candidatheque.canguidev.site">Candidatheque</a>
         </section>
         </section>
         <section>
             <h3>Autre composants</h3>
-            <p>Les autres composants on la même syntaxe pour capter les informations </p>
+            <p>Les autres composants ont la même syntaxe pour capter les informations </p>
         </section>
         <section>
             <section>
-            <h3> Creation Api pour obtenir les informations suite a une requete</h3>
-            <p>1er etape</p>
+            <h3> Création Api pour obtenir les informations suite a une requête</h3>
+            <p>1er étape</p>
                 <pre><code>
      /**
      * @Route("/api/sourcing/recherche", name="api_sourcing_recherche")
@@ -916,7 +916,7 @@ import Form from "react-bootstrap/Form";
                 </code></pre>
             </section>
             <section>
-                <p> 2eme etape</p>
+                <p> 2ème étape</p>
                 <pre><code>
  $query = $cv_repo->createQueryBuilder('c')
             ->select('c.id', 'can.nom as nom', 'can.prenom as prenom', 'can.adresse as adresse','can.telephone as telephone','c.titre as titre','met.id as idmetier','met.libelle as metLibele','dep.id as idrecruteur','vil.id as idville','vil.nom as ville')
