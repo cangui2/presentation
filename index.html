@@ -35,7 +35,6 @@
                 dont le nôtre.</p>
 
         </section>
-
         <section>
             <img class="fit-picture"
                  src="images/Capture d’écran 2021-02-22 125758.png"
@@ -289,12 +288,67 @@ public function __construct(OffreRepository $offreRepo, PostuleRepository $postu
                  alt="erreur">
         </section>
         <section>
-            <h3>La page Twig</h3>
-            <p class="fragment">Affichage des informations</p>
-            <p class="fragment"> Attention</p>
-            <img class="fit-picture fragment"
-                 src="images/erreur.png"
-                 alt="erreur">
+            <section>
+                <h3>La page Twig</h3>
+                <p class="fragment">Affichage des informations</p>
+                <pre><code>
+{% extends 'base.html.twig' %}
+{% block stylesheets %}
+
+    <link rel="stylesheet" href="{{ asset(" assets/css/dashboard_entreprise.css") }}"/>
+
+{% endblock %}
+
+{% block body %}
+
+                </code></pre>
+                </section>
+            <section>
+    <pre><code>
+ {% for offre in offres %}
+
+   <tr>
+       <td><a href="{{ path('offre',{offre:offre.id})}}" style="color: black">{{ offre.titre }}</a>
+             </td>
+                 <td>
+                     <span class="badge badge-pill badge-success offset-md-3">
+                         {% set datePost = offre.datePublication|date('d-m-Y') %}
+                         {% set today = "now"|date('d-m-Y') %}
+                         {% set difference = date(today).diff(date(datePost)) %}
+                         {% set leftDays = difference.days %}
+                         {% if datePost == today %}
+                         Aujourd'hui
+                         {% else %}
+                         {{ leftDays }} jour
+                         {% endif %}
+                     </span>
+                 </td>
+       <td>
+           {{ offre.dateDebut | date('d/m/Y') }}
+       </td>
+
+
+       <td>
+           {% if offre.postules is not empty %}
+           <h3>
+               <a href="#" class="badge badge-pill badge-success offset-md-3 badge-">
+                   {{ offre.postules|length }}
+               </a>
+           </h3>
+           {% else %}
+
+           {% endif %}
+       </td>
+
+       <td class="text-center">5</td>
+   </tr>
+        {% endfor %}
+    </code></pre>
+                <p class="fragment"> Attention</p>
+                <img class="fit-picture fragment"
+                     src="images/erreur.png"
+                     alt="erreur">
+            </section>
         </section>
         <section>
             <h3>Alimenter notre bdd</h3>
@@ -302,24 +356,433 @@ public function __construct(OffreRepository $offreRepo, PostuleRepository $postu
         </section>
         <section>
         <h3>Partie de datafixture</h3>
-            <img class="fit-picture fragment"
-                 src="images/datafixture.png"
-                 alt="data">
+           <pre><code>
+class JulienData extends Fixture implements FixtureGroupInterface
+{
+    private $encoder;
+
+    public function __construct(UserPasswordEncoderInterface $encoder)
+    {
+        $this->encoder = $encoder;
+    }
+
+    public function load(ObjectManager $manager)
+    {
+
+        $ent1 = new Entreprise();
+        $ent1->setRaisonSociale("Entreprise18");
+        $ent1->setSiret("654321987");
+        $ent1->setAdresse1("rue du bas");
+        $ent1->setAdresse2("");
+        $ent1->setCodePostal("75003");
+        $ent1->setVille("Paris");
+        $manager->persist($ent1);
+
+
+        $rec1 = new Recruteur();
+        $rec1->setNom("Gates");
+        $rec1->setPrenom("Bill");
+        $rec1->setEntreprise($ent1);
+        $manager->persist($rec1);
+
+           </code></pre>
 
         </section>
         <section>
             <h3>Explication </h3>
             <h4>Creation de l'object</h4>
-            <img class="fit-picture fragment"
-                 src="images/data1.png"
-                 alt="data1">
+            <pre><code>
+
+        $ent1 = new Entreprise();
+        $ent1->setRaisonSociale("Entreprise18");
+        $ent1->setSiret("654321987");
+        $ent1->setAdresse1("rue du bas");
+        $ent1->setAdresse2("");
+        $ent1->setCodePostal("75003");
+        $ent1->setVille("Paris");
+        $manager->persist($ent1);
+            </code></pre>
 
         </section>
         <section>
             <h3>Entité </h3>
-            <img class="fit-picture fragment"
-                 src="images/data2.png"
-                 alt="data2">
+            <pre><code>
+/**
+ * @ORM\Entity(repositoryClass=EntrepriseRepository::class)
+ */
+class Entreprise
+{
+    /**
+     * @ORM\Id
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $raisonSociale;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $siret;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $adresse1;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $adresse2;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $codePostal;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $telephone;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $ville;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $ape;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Recruteur::class, mappedBy="entreprise")
+     */
+    private $recruteurs;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $role;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $email;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Postule::class, mappedBy="agence")
+     */
+    private $postules;
+
+
+
+    /**
+     * Liaison entre CV et Entreprise représente les CVs mis en favoris par l'entreprise (table de liaison entreprise_cv)
+     * @ORM\ManyToMany(targetEntity=CV::class, inversedBy="favoris")
+     */
+    private $favoris;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Consulte::class, mappedBy="entreprise")
+     */
+    private $consultes;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Offre::class, mappedBy="entreprise")
+     */
+    private $offres;
+
+    public function __construct()
+    {
+        $this->recruteurs = new ArrayCollection();
+        $this->postules = new ArrayCollection();
+        $this->favoris = new ArrayCollection();
+        $this->consultes = new ArrayCollection();
+        $this->offres = new ArrayCollection();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getRaisonSociale(): ?string
+    {
+        return $this->raisonSociale;
+    }
+
+    public function setRaisonSociale(?string $raisonSociale): self
+    {
+        $this->raisonSociale = $raisonSociale;
+
+        return $this;
+    }
+
+    public function getSiret(): ?string
+    {
+        return $this->siret;
+    }
+
+    public function setSiret(?string $siret): self
+    {
+        $this->siret = $siret;
+
+        return $this;
+    }
+
+    public function getAdresse1(): ?string
+    {
+        return $this->adresse1;
+    }
+
+    public function setAdresse1(?string $adresse1): self
+    {
+        $this->adresse1 = $adresse1;
+
+        return $this;
+    }
+
+    public function getAdresse2(): ?string
+    {
+        return $this->adresse2;
+    }
+
+    public function setAdresse2(?string $adresse2): self
+    {
+        $this->adresse2 = $adresse2;
+
+        return $this;
+    }
+
+    public function getCodePostal(): ?string
+    {
+        return $this->codePostal;
+    }
+
+    public function setCodePostal(?string $codePostal): self
+    {
+        $this->codePostal = $codePostal;
+
+        return $this;
+    }
+
+    public function getTelephone(): ?string
+    {
+        return $this->telephone;
+    }
+
+    public function setTelephone(?string $telephone): self
+    {
+        $this->telephone = $telephone;
+
+        return $this;
+    }
+
+    public function getVille(): ?string
+    {
+        return $this->ville;
+    }
+
+    public function setVille(?string $ville): self
+    {
+        $this->ville = $ville;
+
+        return $this;
+    }
+
+    public function getApe(): ?string
+    {
+        return $this->ape;
+    }
+
+    public function setApe(?string $ape): self
+    {
+        $this->ape = $ape;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Recruteur[]
+     */
+    public function getRecruteurs(): Collection
+    {
+        return $this->recruteurs;
+    }
+
+    public function addRecruteur(Recruteur $recruteur): self
+    {
+        if (!$this->recruteurs->contains($recruteur)) {
+            $this->recruteurs[] = $recruteur;
+            $recruteur->setEntreprise($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecruteur(Recruteur $recruteur): self
+    {
+        if ($this->recruteurs->removeElement($recruteur)) {
+            // set the owning side to null (unless already changed)
+            if ($recruteur->getEntreprise() === $this) {
+                $recruteur->setEntreprise(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    public function setRole(?string $role): self
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->raisonSociale;
+    }
+
+    /**
+     * @return Collection|Postule[]
+     */
+    public function getPostules(): Collection
+    {
+        return $this->postules;
+    }
+
+    public function addPostule(Postule $postule): self
+    {
+        if (!$this->postules->contains($postule)) {
+            $this->postules[] = $postule;
+            $postule->setAgence($this);
+        }
+
+        return $this;
+    }
+
+    public function removePostule(Postule $postule): self
+    {
+        if ($this->postules->removeElement($postule)) {
+            // set the owning side to null (unless already changed)
+            if ($postule->getAgence() === $this) {
+                $postule->setAgence(null);
+            }
+        }
+
+        return $this;
+    }
+
+
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|CV[]
+     */
+    public function getFavoris(): Collection
+    {
+        return $this->favoris;
+    }
+
+    public function addFavori(CV $favori): self
+    {
+        if (!$this->favoris->contains($favori)) {
+            $this->favoris[] = $favori;
+        }
+
+        return $this;
+    }
+
+    public function removeFavori(CV $favori): self
+    {
+        $this->favoris->removeElement($favori);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Consulte[]
+     */
+    public function getConsultes(): Collection
+    {
+        return $this->consultes;
+    }
+
+    public function addConsulte(Consulte $consulte): self
+    {
+        if (!$this->consultes->contains($consulte)) {
+            $this->consultes[] = $consulte;
+            $consulte->setEntreprise($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConsulte(Consulte $consulte): self
+    {
+        if ($this->consultes->removeElement($consulte)) {
+            // set the owning side to null (unless already changed)
+            if ($consulte->getEntreprise() === $this) {
+                $consulte->setEntreprise(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Offre[]
+     */
+    public function getOffres(): Collection
+    {
+        return $this->offres;
+    }
+
+    public function addOffre(Offre $offre): self
+    {
+        if (!$this->offres->contains($offre)) {
+            $this->offres[] = $offre;
+            $offre->setEntreprise($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOffre(Offre $offre): self
+    {
+        if ($this->offres->removeElement($offre)) {
+            // set the owning side to null (unless already changed)
+            if ($offre->getEntreprise() === $this) {
+                $offre->setEntreprise(null);
+            }
+        }
+
+        return $this;
+    }
+}
+            </code></pre>
         </section>
         <section>
             <h1>React Js</h1>
@@ -364,9 +827,12 @@ public function __construct(OffreRepository $offreRepo, PostuleRepository $postu
         </section>
         <section>
             <h3> Importation de librairie</h3>
-            <img class="fit-picture "
-                 src="images/import.png"
-                 alt="api">
+            <pre><code>
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import Form from "react-bootstrap/Form";
+            </code></pre>
         </section>
         <section>
             <h3>Pause dans le projet</h3>
