@@ -82,7 +82,7 @@
         <section>
             <h3>Définition d'une entité</h3>
             <p CLASS="fragment">Correspond`a une table d’une base de donn ees relationnelle</p>
-            <p CLASS="fragment">C'est un objet un objet contenant quelques informations indispensables pour le mapping (faire le lien) avec la base de donn ees</p>
+            <p CLASS="fragment">C'est un objet contenant quelques informations indispensables pour le mapping (faire le lien) avec la base de donn ees</p>
         </section>
         <section>
             <h3>Entité</h3>
@@ -841,10 +841,13 @@ class Entreprise
         <section>
             <h3> Importation de librairie</h3>
             <pre><code>
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import Form from "react-bootstrap/Form";
+import {Badge, Col, Container, Form, Row, ToggleButton, ToggleButtonGroup} from "react-bootstrap";
+import AsyncSelect from 'react-select/async';
+import React, {useEffect, useState} from "react";
+import axios from 'axios'
+import {Range} from "react-range";
+import {ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
             </code></pre>
         </section>
         <section>
@@ -870,10 +873,18 @@ import Form from "react-bootstrap/Form";
             <section>
                 <section>Les constantes</section>
                 <pre><code>
-                    function Recherche(props) {
-    const [inputValue, setValue] = useState('');
-    const [selectedValue, setSelectedValue] = useState(null);
-    const [data, setdata] = useState(null);
+                    function Search(props) {
+    // All constant useState
+    const [valueMetier, setValueMetier] = useState([]);
+    const [valueVille, setValueVille] = useState('');
+    const [keyWord, setKeyWord] = useState('');
+    const [recruteur, setRecruteur] = useState('6');
+    const [statusRecruteur, setStatusRecruteur] = useState(false);
+    const [range, setRange] = useState([1]);
+    const [finalRange, setFinalRange] = useState([1]);
+    const [disabled, setDisabled] = useState(true);
+    const [noRefrech, setNoRefresh] = useState(true);
+    const [countCv, setCountCv] = useState(props.countCV);
 
                 </code></pre>
             </section>
@@ -881,27 +892,66 @@ import Form from "react-bootstrap/Form";
             <section>Les constantes : la fonction fetch
             <p >L'API Fetch fournit une interface JavaScript pour l'accès et la manipulation des parties de la pipeline HTTP, comme les requêtes et les réponses.</p>
             <pre><code>
-                 const loadOptions = (inputValue) => {
-        return fetch(`http://candidatheque.canguidev.site//api/villes?nom=${inputValue}`).then(res => res.json());
-    };
+               const loadOtionVille = (value, callback) => {
+        axios.get("https://127.0.0.1:8000/api/villes?nom=" + value)
+            .then((vil) => {
+                callback(vil.data);
+            });
+    }
             </code></pre>
         </section>
+            <section>
+                <h3>On stock les données et on les envoies vers un autre composant.</h3>
+                <pre><code>
+        const changeParam = () => {
+        let params = [];
+        if (keyWord) {
+            params.push('keyword=' + keyWord);
+        }
+        if (statusRecruteur) {
+            params.push('recruteur=6');
+        }
+        if (valueVille) {
+            params.push('ville=' + valueVille);
+            params.push('rayon=' + range);
+        }
+        props.onDemandeCvChanged(params.join("&"));
+    }
+                </code></pre>
+            </section>
         <section>
             <h3> Le parametrage de l'input</h3>
             <pre><code>
- <AsyncSelect
-
-         placeholder=""
-         getOptionLabel={e => e.nom}
-         getOptionValue={e => e.id}
-         loadOptions={loadOptions}
-         onInputChange={handleInputChange}
-         onChange={handleChange}
-         placeholder="Saisissez la ville.."
-         components={{DropdownIndicator: () => null, IndicatorSeparator: () => null}}
-                                />
+    <AsyncSelect
+            className="mb-2"
+            loadOptions={loadOtionVille}
+            getOptionLabel={vil => vil.nom}
+                            isClearable={true}
+                            components={{DropdownIndicator: () => null, IndicatorSeparator: () => null}}
+                            placeholder="Saisissez la ville.."
+                            onChange={value => {
+                                if (value) {
+                                    setValueVille(value.id);
+                                    setDisabled(false)
+                                } else {
+                                    setDisabled(true)
+                                }
+                            }}
+                        />
             </code></pre>
         </section>
+            <section>
+                <h3> Le refresh de react a la modification de variable</h3>
+                <pre><code>
+       useEffect(() => {
+        if (noRefrech === false) {
+            setCountCv(props.countCV);
+            changeParam();
+        } else {
+        }
+    }, [keyWord, valueVille, finalRange, statusRecruteur, noRefrech])
+                </code></pre>
+            </section>
         <section>
             <h3> Démonstration Imput Ville</h3>
             <a href="http://candidatheque.canguidev.site">Candidatheque</a>
@@ -910,6 +960,20 @@ import Form from "react-bootstrap/Form";
         <section>
             <h3>Autre composants</h3>
             <p>Les autres composants ont la même syntaxe pour capter les informations </p>
+        </section>
+        <section>
+            <h3>Récupération des données en fonction de la recherche</h3>
+            <pre><code>
+ const handleCvRequest = (param) => {
+            setNoRefresh(false);
+        axios.get(`https://127.0.0.1:8000/api/sourcing?` + param)
+            .then((result) => {
+                setListe(result.data);
+                setCvCandidat([]);
+            })
+            .catch(error => console.log(error));
+    }
+            </code></pre>
         </section>
         <section>
             <section>
