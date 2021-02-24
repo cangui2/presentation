@@ -80,6 +80,11 @@
             <li class="fragment">récupérer les écritures SQL et les transformer en objet PHP</li>
         </section>
         <section>
+            <h3>Définition d'une entité</h3>
+            <p CLASS="fragment">Correspond`a une table d’une base de donn ees relationnelle</p>
+            <p CLASS="fragment">C'est un objet un objet contenant quelques informations indispensables pour le mapping (faire le lien) avec la base de donn ees</p>
+        </section>
+        <section>
             <h3>Entité</h3>
 
   <pre><code data-trim data-noescape>
@@ -242,7 +247,15 @@ return $this->render('entreprise/dashboard_entreprise.html.twig',[
                     </code></pre>
         </section>
         <section>
+            <h3>Le repository</h3>
+            <p class="fragment">Un repository centralise tout ce qui touche à la récupération de vos entités. </p>
+            <p class="fragment">  Concrètement donc, vous ne devez pas faire la moindre requête SQL ailleurs que dans un repository, c'est la règle.</p>
+            <p class="fragment"> On va donc y construire des méthodes pour récupérer une entité par son id, pour récupérer une liste d'entités suivant un critère spécifique, etc.</p>
+        </section>
+        <section>
             <li >Le constructeur</li>
+            <p class="fragment"> A chaque fois que vous devez récupérer des entités dans votre base de données, vous utiliserez le repository de l'entité correspondante.</p>
+
             <pre class="fragment"><code data-line-numbers="2-4|6-12">
 protected $offreRepo;
 protected $postuleRepo;
